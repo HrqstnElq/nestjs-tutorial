@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as Bcrypt from 'bcrypt';
 
@@ -9,6 +9,7 @@ export enum ROLE {
   USER,
 }
 
+@Schema()
 export class User {
   @Prop({ required: true })
   name: string;
@@ -19,8 +20,8 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ required: true, type: ROLE })
-  role: ROLE;
+  @Prop({ required: true, type: ROLE, default: ROLE.USER })
+  role?: ROLE;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
