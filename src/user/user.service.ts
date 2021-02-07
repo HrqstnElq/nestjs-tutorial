@@ -1,14 +1,18 @@
-import { User, UserDocument } from 'src/models/user.schema';
-import { LoginResult } from './interfaces/loginResult.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { User, UserDocument } from 'src/models/user.schema';
+import { AuthService } from './../auth/auth.service';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
+import { LoginResult } from './interfaces/loginResult.interface';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly authService: AuthService,
+  ) {}
 
   Public(): string {
     return 'public';
@@ -21,7 +25,7 @@ export class UserService {
   async Login(loginData: LoginDto): Promise<LoginResult> {
     const user = await this.userModel.findOne({ username: loginData.username });
     if (await this.userModel['comparePassword'](user, loginData.password))
-      return { token: 'ok' };
+      return { token: this.authService.GenerateToken(user._id, user.username) };
     else
       throw new HttpException(
         'Username or password incorrect',
