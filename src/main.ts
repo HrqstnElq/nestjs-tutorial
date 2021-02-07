@@ -14,6 +14,7 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('tutorial nestjs')
     .setVersion('v1.0')
+    .addBearerAuth()
     .build();
 
   const doc = SwaggerModule.createDocument(app, swaggerConfig);

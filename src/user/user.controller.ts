@@ -1,7 +1,7 @@
 import { JwtAthGuard } from './../auth/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { LoginResult } from './interfaces/loginResult.interface';
 import { RegisterDto } from './dto/register.dto';
@@ -18,6 +18,7 @@ export class UserController {
 
   @Get('secret')
   @UseGuards(JwtAthGuard)
+  @ApiBearerAuth()
   GetSecret(@Req() req): string {
     return this.userService.Secret(req.user.id);
   }

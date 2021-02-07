@@ -24,6 +24,7 @@ export class UserService {
 
   async Login(loginData: LoginDto): Promise<LoginResult> {
     const user = await this.userModel.findOne({ username: loginData.username });
+
     if (await this.userModel['comparePassword'](user, loginData.password))
       return { token: this.authService.GenerateToken(user._id, user.username) };
     else
